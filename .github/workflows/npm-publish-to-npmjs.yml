@@ -20,6 +20,7 @@ jobs:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
+      - run: npm --loglevel verbose list
       - run: npm run prettier:check
       - run: npm run lint
       - run: npm test
@@ -39,32 +40,27 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           # scope: "@msn088"
 
-      - run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-      - run: npm --loglevel verbose list
+      - name: Build package for release
+        run: npm run build:release
 
-      - run: npm run build:release
-
-      # - name: Create a tarball from a package (dry run)
-      #   run: npm pack --dry-run
-
-      - name: Publish to npmjs.com (dry run)
-        # --loglevel silly
-        # --loglevel debug
-        run: >-
-          npm
-          --loglevel notice
-          publish
-          --dry-run
-          --registry https://registry.npmjs.org
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-
-      # - name: Publish to npmjs.com
+      # - name: Publish to npmjs.com (dry run)
       #   run: >-
       #     npm
       #     --loglevel notice
       #     publish
+      #     --dry-run
       #     --registry https://registry.npmjs.org
       #   env:
       #     NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
+      - name: Publish to npmjs.com
+        run: >-
+          npm
+          --loglevel notice
+          publish
+          --registry https://registry.npmjs.org
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
