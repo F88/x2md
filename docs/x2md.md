@@ -21,12 +21,36 @@ Description
 </th></tr></thead>
 <tbody><tr><td>
 
-[f()](./x2md.f.md)
+[toHeader(value, level)](./x2md.toheader.md)
 
 
 </td><td>
 
-This is a simple function that returns a greeting message.
+Converts a string to a Markdown header.
+
+The output format is [ATX headings](https://spec.commonmark.org/0.31.2/#atx-headings)<!-- -->.
+
+
+</td></tr>
+<tr><td>
+
+[toList(items, indentLevel)](./x2md.tolist.md)
+
+
+</td><td>
+
+Converts an array of strings into a Markdown list.
+
+
+</td></tr>
+<tr><td>
+
+[toListItem(value, indentLevel)](./x2md.tolistitem.md)
+
+
+</td><td>
+
+Converts a string to a list item with a specified indentation level.
 
 
 </td></tr>

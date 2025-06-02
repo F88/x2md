@@ -5,6 +5,12 @@
 ```ts
 
 // @public
-export function f(): string;
+export function toHeader(value: string, level?: number): string;
+
+// @public
+export function toList(items: string[], indentLevel?: number): string;
+
+// @public
+export function toListItem(value: string, indentLevel?: number): string;
 
 ```
