@@ -24,9 +24,9 @@ describe('toHeader', () => {
     expect(toHeader('Another Negative', -5)).toBe('# Another Negative');
   });
 
-  it('should default to level 1 if level is greater than 6', () => {
-    expect(toHeader('Level Seven', 7)).toBe('# Level Seven');
-    expect(toHeader('Level Ten', 10)).toBe('# Level Ten');
+  it('should default to level 6 if level is greater than 6', () => {
+    expect(toHeader('Level Seven', 7)).toBe('###### Level Seven');
+    expect(toHeader('Level Ten', 10)).toBe('###### Level Ten');
   });
 
   it('should handle an empty string value', () => {
