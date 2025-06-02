@@ -47,7 +47,7 @@
     "build:release": "npm run clean && npm run prettier:write && npm run lint:fix && tsc --project tsconfig.release.json && npm run test:codecov && npm run api-extractor && npm run api-documenter",
     "api-extractor": "api-extractor run --local --verbose",
     "api-extractor:diagnostics": "api-extractor run --local --verbose --diagnostics",
-    "api-documenter": "api-documenter markdown -i temp"
+    "api-documenter": "api-documenter markdown -i temp -o docs"
   },
   "dependencies": {},
   "devDependencies": {
