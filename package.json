@@ -1,0 +1,12 @@
+{
+  "name": "x2md",
+  "version": "1.0.0",
+  "description": "Collection of small utilities that convert input values into strings suitable for Markdown formatting.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": ["markdown", "tsv", "converter", "table"],
+  "author": "F88",
+  "license": "MIT"
+}
