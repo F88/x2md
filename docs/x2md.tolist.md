@@ -77,7 +77,7 @@ This function iterates through the provided array of strings and converts each s
 
 
 ```typescript
-import { toList } from 'markdown-utils';
+import { toList } from '@msn088/x2md';
 const listItems = ['Item 1', 'Item 2', 'Item 3'];
 const markdownList = toList(listItems);
 // Output:
