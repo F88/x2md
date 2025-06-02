@@ -58,7 +58,7 @@ export function toListItem(value: string, indentLevel: number = 0): string {
  * @public
  */
 export function toList(items: string[], indentLevel: number = 0): string {
-  if (!Array.isArray(items) || items.length === 0) {
+  if (items.length === 0) {
     return '';
   }
   // toListItem handles normalization of indentLevel
