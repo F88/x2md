@@ -1,0 +1,21 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
+  "mainEntryPointFilePath": "<projectFolder>/lib/index.d.ts",
+  "bundledPackages": [],
+  "newlineKind": "lf",
+  "compiler": {
+    "tsconfigFilePath": "<projectFolder>/tsconfig.release.json"
+  },
+  "apiReport": {
+    "enabled": true,
+    "reportFileName": "<unscopedPackageName>",
+    "includeForgottenExports": true
+  },
+  "docModel": {
+    "enabled": true,
+    "includeForgottenExports": true
+  },
+  "dtsRollup": {
+    "enabled": true
+  }
+}
