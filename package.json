@@ -30,7 +30,7 @@
     }
   },
   "scripts": {
-    "clean": "rimraf dist lib coverage markdown",
+    "clean": "rimraf dist lib coverage docs markdown",
     "prettier:check": "prettier --check \"{src,test,scripts}/**/*.{js,json,mjs,ts}\" \"*.{md,json,ts}\"",
     "prettier:write": "prettier --write \"{src,test,scripts}/**/*.{js,json,mjs,ts}\" \"*.{md,json,ts}\"",
     "format": "npm run prettier:write",

@@ -4,11 +4,5 @@
  * @packageDocumentation
  */
 
-/**
- * This is a simple function that returns a greeting message.
- *
- * @public
- */
-export function f(): string {
-  return 'Hello, world!';
-}
+export * from './heading.js';
+export * from './list.js';
