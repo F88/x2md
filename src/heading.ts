@@ -26,8 +26,6 @@
  * @public
  */
 export function toHeader(value: string, level: number = 1): string {
-  let normalizedLevel = level;
-  if (level < 1) normalizedLevel = 1;
-  if (level > 6) normalizedLevel = 6;
+  const normalizedLevel = Math.max(1, Math.min(level, 6));
   return `${'#'.repeat(normalizedLevel)} ${value}`;
 }
