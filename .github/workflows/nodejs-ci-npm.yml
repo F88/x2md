@@ -1,0 +1,72 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Node.js CI (npm)
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: ['main']
+  push:
+  # branches: ["never"]
+
+#concurrency:
+#  group: ${{ github.workflow }}-${{ github.ref }}
+#  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    strategy:
+      matrix:
+        node-version: [20.x, 22.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Show npm config
+        run: npm config list
+
+      - name: Install dependencies
+        # run: npm install
+        run: npm ci
+
+      - name: List dependencies
+        run: npm --loglevel debug list
+        # run: npm --loglevel notice list #default level
+        # run: npm --loglevel debug list
+        # run: npm --loglevel silly list
+
+      - name: Run prettier check
+        run: npm run prettier:check
+
+      - name: Run lint
+        run: npm run lint
+
+      # - name: Run tests
+      #   run: npm run test
+
+      - name: Run tests for Codecov Test Analytics
+        run: npm run test:codecov
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      # - name: Run tests
+      #   run: npm run test:coverage
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
