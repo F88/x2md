@@ -1,8 +1,19 @@
 import { describe, it, expect } from 'vitest';
-import { f } from '../src/index.js';
+import { toHeader, toList, toListItem } from '../src/index.js';
 
-describe('f', () => {
-  it("should return 'Hello, world!'", () => {
-    expect(f()).toBe('Hello, world!');
+describe('Index Exports', () => {
+  it('should export the toHeader function', () => {
+    expect(toHeader).toBeDefined();
+    expect(typeof toHeader).toBe('function');
+  });
+
+  it('should export the toList function', () => {
+    expect(toList).toBeDefined();
+    expect(typeof toList).toBe('function');
+  });
+
+  it('should export the toListItem function', () => {
+    expect(toListItem).toBeDefined();
+    expect(typeof toListItem).toBe('function');
   });
 });
