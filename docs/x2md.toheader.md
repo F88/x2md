@@ -60,7 +60,7 @@ number
 
 </td><td>
 
-_(Optional)_ The level of the header (1-6).
+_(Optional)_ The level of the header (1-6). If less than 1, it is treated as 1. If greater than 6, it is treated as 6.
 
 
 </td></tr>
@@ -73,16 +73,18 @@ A string formatted as a Markdown header.
 
 ## Remarks
 
-This function generates a Markdown header by repeating the `#` character according to the specified level, followed by a space and the provided text. \* The level must be between 1 and 6, where 1 is the highest level (largest header) and 6 is the lowest level (smallest header). \* If the level is outside this range, it defaults to 1.
+This function generates a Markdown header by repeating the `#` character according to the specified level, followed by a space and the provided text. The level must be between 1 and 6, where 1 is the highest level (largest header) and 6 is the lowest level (smallest header). If the level is less than 1, it is treated as 1. If the level is greater than 6, it is treated as 6.
 
 ## Example
 
 
 ```typescript
 import { toHeader } from '@msn088/x2md';
-const header1 = toHeader('Header Level 1'); // "# Header Level 1"
+const header = toHeader('Header Level 1'); // "# Header Level 1"
+const header0 = toHeader('Header Level 0', 0); // "# Header Level 1"
+const header1 = toHeader('Header Level 1', 1); // "# Header Level 1"
 const header2 = toHeader('Header Level 2', 2); // "## Header Level 2"
-const header3 = toHeader('Header Level 3', 3); // "### Header Level 3"
 const header6 = toHeader('Header Level 6', 6); // "###### Header Level 6"
+const header7 = toHeader('Header Level 7', 7); // "###### Header Level 6"
 ```
 
