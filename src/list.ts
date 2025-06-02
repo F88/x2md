@@ -12,7 +12,7 @@
  *
  * @example
  * ```typescript
- * import { toListItem } from 'markdown-utils';
+ * import { toListItem } from '@msn088/x2md';
  * const item1 = toListItem('First item'); // "- First item"
  * const item2 = toListItem('Second item', 1); // "    - Second item"
  * const item3 = toListItem('Third item', 2); // "        - Third item"
@@ -40,7 +40,7 @@ export function toListItem(value: string, indentLevel: number = 0): string {
  *
  * @example
  * ```typescript
- * import { toList } from 'markdown-utils';
+ * import { toList } from '@msn088/x2md';
  * const listItems = ['Item 1', 'Item 2', 'Item 3'];
  * const markdownList = toList(listItems);
  * // Output:
@@ -58,9 +58,8 @@ export function toListItem(value: string, indentLevel: number = 0): string {
  * @public
  */
 export function toList(items: string[], indentLevel: number = 0): string {
-  let s = '';
-  for (const item of items) {
-    s += toListItem(item, indentLevel) + '\n'; // toListItem handles normalization of indentLevel
-  }
+  // toListItem handles normalization of indentLevel
+  const s =
+    items.map((item) => toListItem(item, indentLevel)).join('\n') + '\n';
   return s;
 }

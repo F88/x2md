@@ -14,7 +14,7 @@
  *
  * @example
  * ```typescript
- * import { toHeader } from 'markdown-utils';
+ * import { toHeader } from '@msn088/x2md';
  * const header1 = toHeader('Header Level 1'); // "# Header Level 1"
  * const header2 = toHeader('Header Level 2', 2); // "## Header Level 2"
  * const header3 = toHeader('Header Level 3', 3); // "### Header Level 3"
@@ -24,6 +24,6 @@
  * @public
  */
 export function toHeader(value: string, level: number = 1): string {
-  const normalizedIndentLevel = 1 <= level && level <= 6 ? level : 1;
-  return `${'#'.repeat(normalizedIndentLevel)} ${value}`;
+  const normalizedLevel = 1 <= level && level <= 6 ? level : 1;
+  return `${'#'.repeat(normalizedLevel)} ${value}`;
 }
