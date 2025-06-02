@@ -73,10 +73,10 @@
   "files": [
     "README.md",
     "LICENSE",
-    "dist/**/*.js",
-    "!dist/**/*.test.*",
     "lib/**/*.js",
-    "!lib/**/*.test.*"
+    "!lib/**/*.test.*",
+    "dist/*.d.ts",
+    "dist/tsdoc-metadata.json"
   ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
