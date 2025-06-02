@@ -57,7 +57,7 @@
     "@microsoft/api-extractor": "~7.52",
     "@types/node": "~22",
     "@typescript-eslint/parser": "~8.33",
-    "@vitest/coverage-v8": "~3.1",
+    "@vitest/coverage-v8": "~3.2.0",
     "@vitest/eslint-plugin": "~1.2",
     "eslint": "~9.28",
     "eslint-config-prettier": "~10.1",
@@ -68,7 +68,7 @@
     "tsx": "~4.19",
     "typescript": "~5.8",
     "typescript-eslint": "~8.33",
-    "vitest": "~3.1"
+    "vitest": "~3.2.0"
   },
   "files": [
     "README.md",
