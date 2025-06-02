@@ -1,0 +1,87 @@
+{
+  "name": "@msn088/x2md",
+  "version": "0.1.0",
+  "description": "Collection of small utilities that convert input values ​​into strings suitable for Markdown formatting.",
+  "type": "module",
+  "private": false,
+  "keywords": [
+    "markdown",
+    "nodejs",
+    "typescript"
+  ],
+  "author": "F88 <685250+F88@users.noreply.github.com>",
+  "contributors": [],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/F88/x2md.git"
+  },
+  "bugs": "https://github.com/F88/x2md/issues",
+  "engines": {
+    "node": ">= 20"
+  },
+  "main": "lib/index.js",
+  "types": "dist/x2md.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/x2md.d.ts",
+      "import": "./lib/index.js",
+      "require": "./lib/index.js"
+    }
+  },
+  "scripts": {
+    "clean": "rimraf dist lib coverage markdown",
+    "prettier:check": "prettier --check \"{src,test,scripts}/**/*.{js,json,mjs,ts}\" \"*.{md,json,ts}\"",
+    "prettier:write": "prettier --write \"{src,test,scripts}/**/*.{js,json,mjs,ts}\" \"*.{md,json,ts}\"",
+    "format": "npm run prettier:write",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:bitbucket-pipeline": "vitest run --reporter=default --reporter=junit --outputFile.junit=test-results/junit-report.xml",
+    "test:codecov": "vitest run --coverage --reporter=default --reporter=junit --outputFile.junit=test-report.junit.xml",
+    "prebuild": "npm run clean && tsc --project tsconfig.json && npm run prettier:write && npm run lint:fix && npm run test:codecov",
+    "build": "tsc --project tsconfig.json",
+    "build:watch": "tsc --watch --project tsconfig.json",
+    "prebuild:release": "npm run prettier:write && npm run lint:fix && npm run test:codecov",
+    "build:release": "npm run clean && tsc --project tsconfig.release.json && npm run api-extractor && npm run api-documenter",
+    "api-extractor": "api-extractor run --local --verbose",
+    "api-extractor:diagnostics": "api-extractor run --local --verbose --diagnostics",
+    "api-documenter": "api-documenter markdown -i temp"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@changesets/cli": "~2.29",
+    "@eslint/js": "~9.28",
+    "@microsoft/api-documenter": "~7.26",
+    "@microsoft/api-extractor": "~7.52",
+    "@types/node": "~22",
+    "@typescript-eslint/parser": "~8.33",
+    "@vitest/coverage-v8": "~3.1",
+    "@vitest/eslint-plugin": "~1.2",
+    "eslint": "~9.28",
+    "eslint-config-prettier": "~10.1",
+    "globals": "~16.2",
+    "prettier": "~3.5",
+    "rimraf": "~6.0",
+    "ts-api-utils": "~2.1.0",
+    "tsx": "~4.19",
+    "typescript": "~5.8",
+    "typescript-eslint": "~8.33",
+    "vitest": "~3.1"
+  },
+  "files": [
+    "README.md",
+    "LICENSE",
+    "dist/**/*.js",
+    "!dist/**/*.test.*",
+    "lib/**/*.js",
+    "!lib/**/*.test.*"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public",
+    "provenance": true
+  }
+}
