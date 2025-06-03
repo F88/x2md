@@ -3,40 +3,42 @@ import { toListItem, toList } from '../src/list.js';
 
 describe('toListItem', () => {
   it('should convert text to a list item with no indentation by default', () => {
-    expect(toListItem('First item')).toBe('- First item');
+    expect(toListItem('First item')).toBe('- First item\n');
   });
 
   it('should convert text to a list item with specified indentation level', () => {
-    expect(toListItem('Item at level 0', 0)).toBe('- Item at level 0');
-    expect(toListItem('Item at level 1', 1)).toBe('    - Item at level 1');
-    expect(toListItem('Item at level 2', 2)).toBe('        - Item at level 2');
+    expect(toListItem('Item at level 0', 0)).toBe('- Item at level 0\n');
+    expect(toListItem('Item at level 1', 1)).toBe('    - Item at level 1\n');
+    expect(toListItem('Item at level 2', 2)).toBe(
+      '        - Item at level 2\n',
+    );
   });
 
   it('should default to indentation level 0 if level is negative', () => {
-    expect(toListItem('Negative indent', -1)).toBe('- Negative indent');
+    expect(toListItem('Negative indent', -1)).toBe('- Negative indent\n');
     expect(toListItem('Another negative indent', -5)).toBe(
-      '- Another negative indent',
+      '- Another negative indent\n',
     );
   });
 
   it('should handle an empty string value', () => {
-    expect(toListItem('', 0)).toBe('- ');
-    expect(toListItem('')).toBe('- '); // Default indent level 0
-    expect(toListItem('', 1)).toBe('    - ');
+    expect(toListItem('', 0)).toBe('- \n');
+    expect(toListItem('')).toBe('- \n'); // Default indent level 0
+    expect(toListItem('', 1)).toBe('    - \n');
   });
 
   it('should handle text with special markdown characters correctly', () => {
     expect(toListItem('Item with *asterisks*', 0)).toBe(
-      '- Item with *asterisks*',
+      '- Item with *asterisks*\n',
     );
     expect(toListItem('Item with _underscores_', 1)).toBe(
-      '    - Item with _underscores_',
+      '    - Item with _underscores_\n',
     );
   });
 
   it('should handle text with leading/trailing spaces in value (spaces are preserved)', () => {
-    expect(toListItem('  Spaced Out  ', 0)).toBe('-   Spaced Out  ');
-    expect(toListItem('  Spaced Out  ', 1)).toBe('    -   Spaced Out  ');
+    expect(toListItem('  Spaced Out  ', 0)).toBe('-   Spaced Out  \n');
+    expect(toListItem('  Spaced Out  ', 1)).toBe('    -   Spaced Out  \n');
   });
 });
 

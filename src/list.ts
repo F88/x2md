@@ -13,9 +13,9 @@
  * @example
  * ```typescript
  * import { toListItem } from '@msn088/x2md';
- * const item1 = toListItem('First item'); // "- First item"
- * const item2 = toListItem('Second item', 1); // "    - Second item"
- * const item3 = toListItem('Third item', 2); // "        - Third item"
+ * const item1 = toListItem('First item'); // "- First item\n"
+ * const item2 = toListItem('Second item', 1); // "    - Second item\n"
+ * const item3 = toListItem('Third item', 2); // "        - Third item\n"
  * ```
  *
  * @public
@@ -23,7 +23,7 @@
 export function toListItem(value: string, indentLevel: number = 0): string {
   const normalizedIndentLevel = Math.max(0, indentLevel);
   const indent = ' '.repeat(4 * normalizedIndentLevel);
-  return `${indent}- ${value}`;
+  return `${indent}- ${value}\n`;
 }
 
 /**
@@ -62,7 +62,6 @@ export function toList(items: string[], indentLevel: number = 0): string {
     return '';
   }
   // toListItem handles normalization of indentLevel
-  const s =
-    items.map((item) => toListItem(item, indentLevel)).join('\n') + '\n';
+  const s = items.map((item) => toListItem(item, indentLevel)).join('');
   return s;
 }

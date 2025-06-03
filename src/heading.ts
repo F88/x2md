@@ -15,17 +15,17 @@
  * @example
  * ```typescript
  * import { toHeader } from '@msn088/x2md';
- * const header = toHeader('Header Level 1'); // "# Header Level 1"
- * const header0 = toHeader('Header Level 0', 0); // "# Header Level 1"
- * const header1 = toHeader('Header Level 1', 1); // "# Header Level 1"
- * const header2 = toHeader('Header Level 2', 2); // "## Header Level 2"
- * const header6 = toHeader('Header Level 6', 6); // "###### Header Level 6"
- * const header7 = toHeader('Header Level 7', 7); // "###### Header Level 6"
+ * const header = toHeader('Header Level 1'); // "# Header Level 1\n"
+ * const header0 = toHeader('Header Level 0', 0); // "# Header Level 0\n"
+ * const header1 = toHeader('Header Level 1', 1); // "# Header Level 1\n"
+ * const header2 = toHeader('Header Level 2', 2); // "## Header Level 2\n"
+ * const header6 = toHeader('Header Level 6', 6); // "###### Header Level 6\n"
+ * const header7 = toHeader('Header Level 7', 7); // "###### Header Level 7\n"
  * ```
  *
  * @public
  */
 export function toHeader(value: string, level: number = 1): string {
   const normalizedLevel = Math.max(1, Math.min(level, 6));
-  return `${'#'.repeat(normalizedLevel)} ${value}`;
+  return `${'#'.repeat(normalizedLevel)} ${value}\n`;
 }
