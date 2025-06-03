@@ -1,5 +1,11 @@
 # @msn088/x2md
 
+## 0.4.0
+
+### Minor Changes
+
+- ddd70c9: Changed handling of newline characters in output.
+
 ## 0.3.0
 
 ### Minor Changes
