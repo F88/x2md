@@ -78,8 +78,8 @@ This function ensures that the `indentLevel` is non-negative; negative values ar
 
 ```typescript
 import { toListItem } from '@msn088/x2md';
-const item1 = toListItem('First item'); // "- First item"
-const item2 = toListItem('Second item', 1); // "    - Second item"
-const item3 = toListItem('Third item', 2); // "        - Third item"
+const item1 = toListItem('First item'); // "- First item\n"
+const item2 = toListItem('Second item', 1); // "    - Second item\n"
+const item3 = toListItem('Third item', 2); // "        - Third item\n"
 ```
 
