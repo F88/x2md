@@ -21,6 +21,15 @@ Description
 </th></tr></thead>
 <tbody><tr><td>
 
+[parseTsv(tsv)](./x2md.parsetsv.md)
+
+
+</td><td>
+
+
+</td></tr>
+<tr><td>
+
 [toHeader(value, level)](./x2md.toheader.md)
 
 
@@ -51,6 +60,95 @@ Converts an array of strings into a Markdown list.
 </td><td>
 
 Converts a string to a list item with a specified indentation level.
+
+
+</td></tr>
+<tr><td>
+
+[tsvToTable(tsv, delimiter)](./x2md.tsvtotable.md)
+
+
+</td><td>
+
+**_(BETA)_** Convert TSV to a Markdown table
+
+
+</td></tr>
+</tbody></table>
+
+## Type Aliases
+
+<table><thead><tr><th>
+
+Type Alias
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[DataCell](./x2md.datacell.md)
+
+
+</td><td>
+
+
+</td></tr>
+<tr><td>
+
+[DataRow](./x2md.datarow.md)
+
+
+</td><td>
+
+
+</td></tr>
+<tr><td>
+
+[DelimiterCell](./x2md.delimitercell.md)
+
+
+</td><td>
+
+
+</td></tr>
+<tr><td>
+
+[DelimiterRow](./x2md.delimiterrow.md)
+
+
+</td><td>
+
+
+</td></tr>
+<tr><td>
+
+[HeaderCell](./x2md.headercell.md)
+
+
+</td><td>
+
+
+</td></tr>
+<tr><td>
+
+[HeaderRow](./x2md.headerrow.md)
+
+
+</td><td>
+
+
+</td></tr>
+<tr><td>
+
+[MarkdownTable](./x2md.markdowntable.md)
+
+
+</td><td>
 
 
 </td></tr>
