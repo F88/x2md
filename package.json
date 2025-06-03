@@ -49,10 +49,10 @@
     "api-extractor:diagnostics": "api-extractor run --local --verbose --diagnostics",
     "api-documenter": "api-documenter markdown -i temp -o docs"
   },
-  "dependencies": {},
   "devDependencies": {
     "@changesets/cli": "~2.29",
     "@eslint/js": "~9.28",
+    "@faker-js/faker": "^9.8.0",
     "@microsoft/api-documenter": "~7.26",
     "@microsoft/api-extractor": "~7.52",
     "@types/node": "~22",
