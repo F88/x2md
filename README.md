@@ -15,5 +15,6 @@ Collection of small utilities that convert input values into strings suitable fo
 
 ## References
 
+- [GitHub Flavored Markdown Spec](https://github.github.com/gfm/)
 - [CommonMark Spec](https://spec.commonmark.org/)
 - [CommonMark.org](https://commonmark.org/)

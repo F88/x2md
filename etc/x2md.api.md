@@ -5,6 +5,36 @@
 ```ts
 
 // @public
+export type DataCell = string;
+
+// @public
+export type DataRow = DataCell[];
+
+// @public
+export interface DelimiterCell {
+    alignment?: 'left' | 'center' | 'right';
+}
+
+// @public
+export type DelimiterRow = DelimiterCell[];
+
+// @public
+export type HeaderCell = string;
+
+// @public
+export type HeaderRow = HeaderCell[];
+
+// @public
+export interface MarkdownTable {
+    data: DataRow[];
+    delimiter: DelimiterRow;
+    header: HeaderRow;
+}
+
+// @beta
+export function parseTsv(tsv: string): MarkdownTable;
+
+// @public
 export function toHeader(value: string, level?: number): string;
 
 // @public
@@ -12,5 +42,8 @@ export function toList(items: string[], indentLevel?: number): string;
 
 // @public
 export function toListItem(value: string, indentLevel?: number): string;
+
+// @public
+export function toTable(table: MarkdownTable, customDelimiter?: DelimiterRow): string;
 
 ```
