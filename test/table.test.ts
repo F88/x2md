@@ -9,9 +9,27 @@ import {
   toTableHeader,
   tsvToTable,
   validateTable,
+  escapeSpecialCharsForTable,
+  HeaderRow,
+  DataRow,
 } from '../src/table.js';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+
+const Specials = {
+  tsv: {
+    header: '|PIPE|CHANNEL|\t\\?\\\t Space alian \n',
+    data: '|PIPE|X|\t\\TR\\UE\\\t Space Cat \n',
+  },
+  object: {
+    header: ['|PIPE|CHANNEL|', '\\?\\', ' Space alian '] as HeaderRow,
+    data: [['|PIPE|X|', '\\TR\\UE\\', ' Space Cat ']] as DataRow[],
+  },
+  markdown: {
+    header: '| \\|PIPE\\|CHANNEL\\| | \\\\?\\\\ | \\ Space alian\\  |\n',
+    data: '| \\|PIPE\\|X\\| | \\\\TR\\\\UE\\\\ | \\ Space Cat\\  |\n',
+  },
+} as const;
 
 describe('table.ts', () => {
   describe('parseTsv', () => {
@@ -27,6 +45,16 @@ describe('table.ts', () => {
       expect(table.delimiter[0].alignment).toBeUndefined(); // Default alignment is left
       expect(table.delimiter[1].alignment).toBeUndefined(); // Default alignment is left
     });
+    it('should parse TSV contains special characters into Table structure', () => {
+      const tsv = Specials.tsv.header + Specials.tsv.data;
+      const table = parseTsv(tsv);
+      expect(table.header).toEqual(Specials.object.header);
+      expect(table.data).toEqual(Specials.object.data);
+      expect(table.delimiter.length).toBe(3);
+      expect(table.delimiter[0].alignment).toBeUndefined(); // Default alignment is left
+      expect(table.delimiter[1].alignment).toBeUndefined(); // Default alignment is left
+      expect(table.delimiter[2].alignment).toBeUndefined(); // Default alignment is left
+    });
     it('should handle single row TSV', () => {
       const tsv = 'Only\nValue';
       const table = parseTsv(tsv);
@@ -37,9 +65,9 @@ describe('table.ts', () => {
     it('should handle empty TSV', () => {
       const tsv = '';
       const table = parseTsv(tsv);
-      expect(table.header).toEqual(['']);
+      expect(table.header).toEqual([]);
       expect(table.data).toEqual([]);
-      expect(table.delimiter.length).toBe(1);
+      expect(table.delimiter).toEqual([]);
     });
   });
 
@@ -47,6 +75,10 @@ describe('table.ts', () => {
     it('should format a single header row', () => {
       const header = ['Name', 'Age'];
       expect(toTableHeader(header)).toBe('| Name | Age |\n');
+    });
+    it('should format a single header row contains special characters', () => {
+      const header = Specials.object.header;
+      expect(toTableHeader(header)).toBe(Specials.markdown.header);
     });
     it('should handle a single cell', () => {
       const header = ['Only'];
@@ -92,6 +124,10 @@ describe('table.ts', () => {
       const row: string[] = ['Alice', '30'];
       expect(toTableDataRow(row)).toBe('| Alice | 30 |\n');
     });
+    it('should format a single header row contains special characters', () => {
+      const row = Specials.object.data[0];
+      expect(toTableHeader(row)).toBe(Specials.markdown.data);
+    });
     it('should handle a single cell', () => {
       const row: string[] = ['Only'];
       expect(toTableDataRow(row)).toBe('| Only |\n');
@@ -109,6 +145,11 @@ describe('table.ts', () => {
         ['Bob', '25'],
       ];
       expect(toTableDataRows(rows)).toBe('| Alice | 30 |\n| Bob | 25 |\n');
+    });
+    it('should format multiple data rows contains special characters', () => {
+      const rows = [Specials.object.data[0], Specials.object.data[0]];
+      const expected = Specials.markdown.data + Specials.markdown.data;
+      expect(toTableDataRows(rows)).toBe(expected);
     });
     it('should handle a single row', () => {
       const rows: string[][] = [['Single', 'Row']];
@@ -253,6 +294,15 @@ describe('table.ts', () => {
       expect(tsvToTable(tsv)).toBe(expected);
     });
 
+    it('should convert valid TSV contains special characters to markdown table', () => {
+      const tsv = Specials.tsv.header + Specials.tsv.data;
+      const expected =
+        Specials.markdown.header +
+        '| --- | --- | --- |\n' +
+        Specials.markdown.data;
+      expect(tsvToTable(tsv)).toBe(expected);
+    });
+
     it('should handle single row TSV', () => {
       const tsv = 'Only\nValue';
       const expected = '| Only |\n' + '| --- |\n' + '| Value |\n';
@@ -318,9 +368,6 @@ describe('table.ts', () => {
 
       const table = tsvToTable(tsv);
       const line_1_20 = table.split('\n').splice(0, 20).join('\n') + '\n';
-
-      // console.error(line_1_20);
-
       expect(line_1_20).toBe(expected);
     });
 
@@ -365,7 +412,7 @@ describe('table.ts', () => {
       const tsv = [
         'First Name\tLast Name\tAge\tTitle\tArea',
         'Alice\tSmith\t30\tEngineer\tNorth',
-        'Bob\tJohnson\t25\tDesigner\tSouth',
+        'Bob\t  Jo | hn|son \t25\tDesigner\tSouth',
         'Charlie\tBrown\t35\tManager\tEast',
         'David\tWilliams\t28\tDeveloper\tWest',
         'Eve\tJones\t22\tIntern\tCentral',
@@ -384,12 +431,12 @@ describe('table.ts', () => {
         '| First Name | Last Name | Age | Title | Area |\n' +
         '| :--- | :---: | ---: | --- | --- |\n' +
         '| Alice | Smith | 30 | Engineer | North |\n' +
-        '| Bob | Johnson | 25 | Designer | South |\n' +
+        '| Bob | \\ \\ Jo \\| hn\\|son\\  | 25 | Designer | South |\n' +
         '| Charlie | Brown | 35 | Manager | East |\n' +
         '| David | Williams | 28 | Developer | West |\n' +
         '| Eve | Jones | 22 | Intern | Central |\n';
-
-      expect(tsvToTable(tsv, delimiter)).toBe(expected);
+      const actual = tsvToTable(tsv, delimiter);
+      expect(actual).toBe(expected);
     });
   });
 
@@ -398,7 +445,7 @@ describe('table.ts', () => {
       const tsv = [
         'First Name\tLast Name\tAge\tTitle\tArea',
         'Alice\tSmith\t30\tEngineer\tNorth',
-        'Bob\tJohnson\t25\tDesigner\tSouth',
+        'Bob\t  Jo | hn|son \t25\tDesigner\tSouth',
         'Charlie\tBrown\t35\tManager\tEast',
         'David\tWilliams\t28\tDeveloper\tWest',
         'Eve\tJones\t22\tIntern\tCentral',
@@ -413,24 +460,46 @@ describe('table.ts', () => {
         { alignment: undefined },
       ];
 
-      // console.dir(delimiter, { depth: null });
-      // Update delimiter
       const out = toTable({
         ...table,
         delimiter: delimiter,
       });
 
-      // console.debug(out);
-
       expect(out).toBe(
         '| First Name | Last Name | Age | Title | Area |\n' +
           '| :--- | :---: | ---: | --- | --- |\n' +
           '| Alice | Smith | 30 | Engineer | North |\n' +
-          '| Bob | Johnson | 25 | Designer | South |\n' +
+          '| Bob | \\ \\ Jo \\| hn\\|son\\  | 25 | Designer | South |\n' +
           '| Charlie | Brown | 35 | Manager | East |\n' +
           '| David | Williams | 28 | Developer | West |\n' +
           '| Eve | Jones | 22 | Intern | Central |\n',
       );
+    });
+  });
+
+  describe('escapeSpecialCharsForTable', () => {
+    it('should escape pipe character', () => {
+      expect(escapeSpecialCharsForTable('foo|bar')).toBe('foo\\|bar');
+    });
+    it('should escape backslash', () => {
+      expect(escapeSpecialCharsForTable('foo\\bar')).toBe('foo\\\\bar');
+    });
+    it('should escape leading spaces', () => {
+      expect(escapeSpecialCharsForTable('  foo')).toBe('\\ \\ foo');
+    });
+    it('should escape trailing spaces', () => {
+      expect(escapeSpecialCharsForTable('foo  ')).toBe('foo\\ \\ ');
+    });
+    it('should escape both leading and trailing spaces', () => {
+      expect(escapeSpecialCharsForTable('  foo  ')).toBe('\\ \\ foo\\ \\ ');
+    });
+    it('should escape all at once', () => {
+      expect(escapeSpecialCharsForTable(' |foo\\bar| ')).toBe(
+        '\\ \\|foo\\\\bar\\|\\ ',
+      );
+    });
+    it('should not escape normal text', () => {
+      expect(escapeSpecialCharsForTable('foo')).toBe('foo');
     });
   });
 });

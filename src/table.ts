@@ -21,13 +21,15 @@ export type MarkdownTable = {
 export function parseTsv(tsv: string): MarkdownTable {
   // console.dir(tsv, { depth: null });
   const lines = tsv
-    .trim()
+    // .trim() /* DO NOT TRIM */
     .split(/\r?\n|\r/)
     .map((line) => {
       return line;
     });
 
-  const header = lines[0].split('\t') as HeaderRow;
+  const source = lines.filter((e) => e !== ''); // Filter out empty lines
+
+  const header = source.length > 0 ? (source[0].split('\t') as HeaderRow) : [];
 
   const delimiter: DelimiterRow = [
     ...header.map(() => {
@@ -36,7 +38,10 @@ export function parseTsv(tsv: string): MarkdownTable {
     }),
   ];
 
-  const data = lines.slice(1).map((line) => line.split('\t') as DataRow);
+  const data =
+    source.length > 1
+      ? source.slice(1).map((line) => line.split('\t') as DataRow)
+      : [];
 
   const ret: MarkdownTable = {
     header,
@@ -47,12 +52,22 @@ export function parseTsv(tsv: string): MarkdownTable {
   return ret;
 }
 
+export function escapeSpecialCharsForTable(str: string): string {
+  // Escape pipe, backslash, and leading/trailing spaces for Markdown tables
+  return str
+    .replace(/\\/g, '\\\\') // Escape backslash
+    .replace(/\|/g, '\\|') // Escape pipe
+    .replace(/^\s+|\s+$/g, (s) => s.replace(/ /g, '\\ ')); // Escape leading/trailing spaces
+}
+
 export function toTableHeader(header: HeaderRow): string {
   // console.dir(header, { depth: null });
   if (header.length === 0) {
     return '';
   }
-  const headerRow = header.map((value) => value).join(' | ');
+  const headerRow = header
+    .map((value) => escapeSpecialCharsForTable(value))
+    .join(' | ');
   const ret = `| ${headerRow} |\n`;
   // console.dir(ret, { depth: null });
   return ret;
@@ -88,7 +103,9 @@ export function toTableDataRow(row: DataRow): string {
   if (row.length === 0) {
     return '';
   }
-  const dataRowString = row.map((cell) => cell).join(' | ');
+  const dataRowString = row
+    .map((cell) => escapeSpecialCharsForTable(cell))
+    .join(' | ');
   const ret = `| ${dataRowString} |\n`;
   // console.dir(ret, { depth: null });
   return ret;
