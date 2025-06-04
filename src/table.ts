@@ -245,10 +245,10 @@ export function validateTable(table: MarkdownTable): {
  * const markdownTable = toTable(table);
  * console.log(markdownTable);
  * // Output:
- * * | Name  | Age |
- * * | :---  | ---: |
- * * | Alice | 30  |
- * * | Bob   | 25  |
+ * | Name  | Age |
+ * | :---  | ---: |
+ * | Alice | 30  |
+ * | Bob   | 25  |
  * ```
  *
  * @public
