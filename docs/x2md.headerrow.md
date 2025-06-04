@@ -4,6 +4,8 @@
 
 ## HeaderRow type
 
+HeaderRow represents a row of header cells in a Markdown table.
+
 **Signature:**
 
 ```typescript

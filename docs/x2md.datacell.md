@@ -4,6 +4,8 @@
 
 ## DataCell type
 
+DataCell represents a single cell in the data rows of a Markdown table.
+
 **Signature:**
 
 ```typescript

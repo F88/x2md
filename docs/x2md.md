@@ -26,6 +26,8 @@ Description
 
 </td><td>
 
+**_(BETA)_** Parses a TSV (Tab-Separated Values) string into a MarkdownTable structure.
+
 
 </td></tr>
 <tr><td>
@@ -65,12 +67,49 @@ Converts a string to a list item with a specified indentation level.
 </td></tr>
 <tr><td>
 
-[tsvToTable(tsv, delimiter)](./x2md.tsvtotable.md)
+[toTable(table, customDelimiter)](./x2md.totable.md)
 
 
 </td><td>
 
-**_(BETA)_** Convert TSV to a Markdown table
+Convert a MarkdownTable to a string representation.
+
+
+</td></tr>
+</tbody></table>
+
+## Interfaces
+
+<table><thead><tr><th>
+
+Interface
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[DelimiterCell](./x2md.delimitercell.md)
+
+
+</td><td>
+
+DelimiterCell represents a single cell in the delimiter row of a Markdown table.
+
+
+</td></tr>
+<tr><td>
+
+[MarkdownTable](./x2md.markdowntable.md)
+
+
+</td><td>
+
+MarkdownTable represents a complete Markdown table structure.
 
 
 </td></tr>
@@ -96,6 +135,8 @@ Description
 
 </td><td>
 
+DataCell represents a single cell in the data rows of a Markdown table.
+
 
 </td></tr>
 <tr><td>
@@ -105,14 +146,7 @@ Description
 
 </td><td>
 
-
-</td></tr>
-<tr><td>
-
-[DelimiterCell](./x2md.delimitercell.md)
-
-
-</td><td>
+DataRow represents a row of data cells in a Markdown table.
 
 
 </td></tr>
@@ -123,6 +157,8 @@ Description
 
 </td><td>
 
+DelimiterRow represents a row of delimiter cells in a Markdown table.
+
 
 </td></tr>
 <tr><td>
@@ -131,6 +167,8 @@ Description
 
 
 </td><td>
+
+HeaderCell represents a single cell in the header row of a Markdown table.
 
 
 </td></tr>
@@ -141,14 +179,7 @@ Description
 
 </td><td>
 
-
-</td></tr>
-<tr><td>
-
-[MarkdownTable](./x2md.markdowntable.md)
-
-
-</td><td>
+HeaderRow represents a row of header cells in a Markdown table.
 
 
 </td></tr>

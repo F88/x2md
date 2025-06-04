@@ -4,6 +4,8 @@
 
 ## DelimiterRow type
 
+DelimiterRow represents a row of delimiter cells in a Markdown table.
+
 **Signature:**
 
 ```typescript

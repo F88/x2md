@@ -4,6 +4,8 @@
 
 ## HeaderCell type
 
+HeaderCell represents a single cell in the header row of a Markdown table.
+
 **Signature:**
 
 ```typescript

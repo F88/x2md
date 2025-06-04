@@ -4,6 +4,8 @@
 
 ## DataRow type
 
+DataRow represents a row of data cells in a Markdown table.
+
 **Signature:**
 
 ```typescript

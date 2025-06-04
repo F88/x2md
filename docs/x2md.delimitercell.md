@@ -2,12 +2,56 @@
 
 [Home](./index.md) &gt; [@msn088/x2md](./x2md.md) &gt; [DelimiterCell](./x2md.delimitercell.md)
 
-## DelimiterCell type
+## DelimiterCell interface
+
+DelimiterCell represents a single cell in the delimiter row of a Markdown table.
 
 **Signature:**
 
 ```typescript
-export type DelimiterCell = {
-    alignment?: 'left' | 'center' | 'right';
-};
+export interface DelimiterCell 
 ```
+
+## Properties
+
+<table><thead><tr><th>
+
+Property
+
+
+</th><th>
+
+Modifiers
+
+
+</th><th>
+
+Type
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[alignment?](./x2md.delimitercell.alignment.md)
+
+
+</td><td>
+
+
+</td><td>
+
+'left' \| 'center' \| 'right'
+
+
+</td><td>
+
+_(Optional)_ The alignment of the cell content.
+
+
+</td></tr>
+</tbody></table>
