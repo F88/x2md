@@ -7,10 +7,10 @@
 export * from './heading.js';
 export * from './list.js';
 export {
-  parseTsv,
-  // toTable,
-  tsvToTable,
+  toTable,
   // validateTable,
   type DelimiterCell,
   type DelimiterRow,
 } from './table.js';
+
+export { parseTsv } from './parser.js';

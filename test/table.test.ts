@@ -1,26 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import {
   type DelimiterRow,
-  parseTsv,
   toTable,
   toTableDataRow,
   toTableDataRows,
   toTableDelimiter,
   toTableHeader,
-  tsvToTable,
   validateTable,
   escapeSpecialCharsForTable,
   HeaderRow,
   DataRow,
 } from '../src/table.js';
-import { readFileSync } from 'fs';
-import { join } from 'path';
 
 const Specials = {
-  tsv: {
-    header: '|PIPE|CHANNEL|\t\\?\\\t Space alian \n',
-    data: '|PIPE|X|\t\\TR\\UE\\\t Space Cat \n',
-  },
   object: {
     header: ['|PIPE|CHANNEL|', '\\?\\', ' Space alian '] as HeaderRow,
     data: [['|PIPE|X|', '\\TR\\UE\\', ' Space Cat ']] as DataRow[],
@@ -32,42 +24,29 @@ const Specials = {
 } as const;
 
 describe('table.ts', () => {
-  describe('parseTsv', () => {
-    it('should parse TSV into Table structure', () => {
-      const tsv = 'Name\tAge\nAlice\t30\nBob\t25';
-      const table = parseTsv(tsv);
-      expect(table.header).toEqual(['Name', 'Age']);
-      expect(table.data).toEqual([
-        ['Alice', '30'],
-        ['Bob', '25'],
-      ]);
-      expect(table.delimiter.length).toBe(2);
-      expect(table.delimiter[0].alignment).toBeUndefined(); // Default alignment is left
-      expect(table.delimiter[1].alignment).toBeUndefined(); // Default alignment is left
+  describe('escapeSpecialCharsForTable', () => {
+    it('should escape pipe character', () => {
+      expect(escapeSpecialCharsForTable('foo|bar')).toBe('foo\\|bar');
     });
-    it('should parse TSV contains special characters into Table structure', () => {
-      const tsv = Specials.tsv.header + Specials.tsv.data;
-      const table = parseTsv(tsv);
-      expect(table.header).toEqual(Specials.object.header);
-      expect(table.data).toEqual(Specials.object.data);
-      expect(table.delimiter.length).toBe(3);
-      expect(table.delimiter[0].alignment).toBeUndefined(); // Default alignment is left
-      expect(table.delimiter[1].alignment).toBeUndefined(); // Default alignment is left
-      expect(table.delimiter[2].alignment).toBeUndefined(); // Default alignment is left
+    it('should escape backslash', () => {
+      expect(escapeSpecialCharsForTable('foo\\bar')).toBe('foo\\\\bar');
     });
-    it('should handle single row TSV', () => {
-      const tsv = 'Only\nValue';
-      const table = parseTsv(tsv);
-      expect(table.header).toEqual(['Only']);
-      expect(table.data).toEqual([['Value']]);
-      expect(table.delimiter.length).toBe(1);
+    it('should escape leading spaces', () => {
+      expect(escapeSpecialCharsForTable('  foo')).toBe('\\ \\ foo');
     });
-    it('should handle empty TSV', () => {
-      const tsv = '';
-      const table = parseTsv(tsv);
-      expect(table.header).toEqual([]);
-      expect(table.data).toEqual([]);
-      expect(table.delimiter).toEqual([]);
+    it('should escape trailing spaces', () => {
+      expect(escapeSpecialCharsForTable('foo  ')).toBe('foo\\ \\ ');
+    });
+    it('should escape both leading and trailing spaces', () => {
+      expect(escapeSpecialCharsForTable('  foo  ')).toBe('\\ \\ foo\\ \\ ');
+    });
+    it('should escape all at once', () => {
+      expect(escapeSpecialCharsForTable(' |foo\\bar| ')).toBe(
+        '\\ \\|foo\\\\bar\\|\\ ',
+      );
+    });
+    it('should not escape normal text', () => {
+      expect(escapeSpecialCharsForTable('foo')).toBe('foo');
     });
   });
 
@@ -237,16 +216,31 @@ describe('table.ts', () => {
     it('should format a valid table', () => {
       const table = {
         header: ['Name', 'Age'],
-        delimiter: [
-          { alignment: 'left' as const },
-          { alignment: 'right' as const },
-        ],
+        delimiter: [{}, {}],
         data: [
           ['Alice', '30'],
           ['Bob', '25'],
         ],
       };
       expect(toTable(table)).toBe(
+        '| Name | Age |\n| --- | --- |\n| Alice | 30 |\n| Bob | 25 |\n',
+      );
+    });
+
+    it('should format a valid table with custom delimiter alignments', () => {
+      const table = {
+        header: ['Name', 'Age'],
+        delimiter: [{}, {}],
+        data: [
+          ['Alice', '30'],
+          ['Bob', '25'],
+        ],
+      };
+      const customDelimiter: DelimiterRow = [
+        { alignment: 'left' },
+        { alignment: 'right' },
+      ];
+      expect(toTable(table, customDelimiter)).toBe(
         '| Name | Age |\n| :--- | ---: |\n| Alice | 30 |\n| Bob | 25 |\n',
       );
     });
@@ -279,227 +273,6 @@ describe('table.ts', () => {
         data: [],
       };
       expect(() => toTable(table)).toThrow('Invalid table structure');
-    });
-  });
-
-  describe('tsvToTable', () => {
-    it('should convert valid TSV to markdown table', () => {
-      const tsv = 'Name\tAge\nAlice\t30\nBob\t25';
-      const expected =
-        '| Name | Age |\n' +
-        '| --- | --- |\n' +
-        '| Alice | 30 |\n' +
-        '| Bob | 25 |\n';
-      // left alignment is default for all columns
-      expect(tsvToTable(tsv)).toBe(expected);
-    });
-
-    it('should convert valid TSV contains special characters to markdown table', () => {
-      const tsv = Specials.tsv.header + Specials.tsv.data;
-      const expected =
-        Specials.markdown.header +
-        '| --- | --- | --- |\n' +
-        Specials.markdown.data;
-      expect(tsvToTable(tsv)).toBe(expected);
-    });
-
-    it('should handle single row TSV', () => {
-      const tsv = 'Only\nValue';
-      const expected = '| Only |\n' + '| --- |\n' + '| Value |\n';
-      expect(tsvToTable(tsv)).toBe(expected);
-    });
-
-    it('should throw on empty TSV', () => {
-      const tsv = '';
-      expect(() => tsvToTable(tsv)).toThrow('Invalid table structure');
-    });
-
-    it('should throw if data row length mismatches header', () => {
-      const tsv = 'A\tB\n1';
-      expect(() => tsvToTable(tsv)).toThrow('Invalid table structure');
-    });
-
-    it('should convert a real TSV file 1 to markdown table', () => {
-      const tsvPath = join(__dirname, 'fixtures', '1.tsv');
-      const tsv = readFileSync(tsvPath, 'utf-8');
-      const expected =
-        '| Name | Age |\n' +
-        '| --- | --- |\n' +
-        '| Alice | 30 |\n' +
-        '| Bob | 25 |\n';
-      expect(tsvToTable(tsv)).toBe(expected);
-    });
-
-    it('should convert a real TSV file 2 to markdown table', () => {
-      const tsvPath = join(__dirname, 'fixtures', '2.tsv');
-      const tsv = readFileSync(tsvPath, 'utf-8');
-      const expected =
-        '| Name | Age |\n' +
-        '| --- | --- |\n' +
-        '| Alice | 30 |\n' +
-        '| Bob | 25 |\n';
-      expect(tsvToTable(tsv)).toBe(expected);
-    });
-
-    it('should convert a real TSV file 3 to markdown table', () => {
-      const tsvPath = join(__dirname, 'fixtures', 'weather.tsv');
-      const tsv = readFileSync(tsvPath, 'utf-8');
-      const expected =
-        '| MinTemp | MaxTemp | Rainfall | Evaporation | Sunshine | WindGustDir | WindGustSpeed | WindDir9am | WindDir3pm | WindSpeed9am | WindSpeed3pm | Humidity9am | Humidity3pm | Pressure9am | Pressure3pm | Cloud9am | Cloud3pm | Temp9am | Temp3pm | RainToday | RISK_MM | RainTomorrow |\n' +
-        '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n' +
-        '| 8 | 24.3 | 0 | 3.4 | 6.3 | NW | 30 | SW | NW | 6 | 20 | 68 | 29 | 1019.7 | 1015 | 7 | 7 | 14.4 | 23.6 | No | 3.6 | Yes |\n' +
-        '| 14 | 26.9 | 3.6 | 4.4 | 9.7 | ENE | 39 | E | W | 4 | 17 | 80 | 36 | 1012.4 | 1008.4 | 5 | 3 | 17.5 | 25.7 | Yes | 3.6 | Yes |\n' +
-        '| 13.7 | 23.4 | 3.6 | 5.8 | 3.3 | NW | 85 | N | NNE | 6 | 6 | 82 | 69 | 1009.5 | 1007.2 | 8 | 7 | 15.4 | 20.2 | Yes | 39.8 | Yes |\n' +
-        '| 13.3 | 15.5 | 39.8 | 7.2 | 9.1 | NW | 54 | WNW | W | 30 | 24 | 62 | 56 | 1005.5 | 1007 | 2 | 7 | 13.5 | 14.1 | Yes | 2.8 | Yes |\n' +
-        '| 7.6 | 16.1 | 2.8 | 5.6 | 10.6 | SSE | 50 | SSE | ESE | 20 | 28 | 68 | 49 | 1018.3 | 1018.5 | 7 | 7 | 11.1 | 15.4 | Yes | 0 | No |\n' +
-        '| 6.2 | 16.9 | 0 | 5.8 | 8.2 | SE | 44 | SE | E | 20 | 24 | 70 | 57 | 1023.8 | 1021.7 | 7 | 5 | 10.9 | 14.8 | No | 0.2 | No |\n' +
-        '| 6.1 | 18.2 | 0.2 | 4.2 | 8.4 | SE | 43 | SE | ESE | 19 | 26 | 63 | 47 | 1024.6 | 1022.2 | 4 | 6 | 12.4 | 17.3 | No | 0 | No |\n' +
-        '| 8.3 | 17 | 0 | 5.6 | 4.6 | E | 41 | SE | E | 11 | 24 | 65 | 57 | 1026.2 | 1024.2 | 6 | 7 | 12.1 | 15.5 | No | 0 | No |\n' +
-        '| 8.8 | 19.5 | 0 | 4 | 4.1 | S | 48 | E | ENE | 19 | 17 | 70 | 48 | 1026.1 | 1022.7 | 7 | 7 | 14.1 | 18.9 | No | 16.2 | Yes |\n' +
-        '| 8.4 | 22.8 | 16.2 | 5.4 | 7.7 | E | 31 | S | ESE | 7 | 6 | 82 | 32 | 1024.1 | 1020.7 | 7 | 1 | 13.3 | 21.7 | Yes | 0 | No |\n' +
-        '| 9.1 | 25.2 | 0 | 4.2 | 11.9 | N | 30 | SE | NW | 6 | 9 | 74 | 34 | 1024.4 | 1021.1 | 1 | 2 | 14.6 | 24 | No | 0.2 | No |\n' +
-        '| 8.5 | 27.3 | 0.2 | 7.2 | 12.5 | E | 41 | E | NW | 2 | 15 | 54 | 35 | 1023.8 | 1019.9 | 0 | 3 | 16.8 | 26 | No | 0 | No |\n' +
-        '| 10.1 | 27.9 | 0 | 7.2 | 13 | WNW | 30 | S | NW | 6 | 7 | 62 | 29 | 1022 | 1017.1 | 0 | 1 | 17 | 27.1 | No | 0 | No |\n' +
-        '| 12.1 | 30.9 | 0 | 6.2 | 12.4 | NW | 44 | WNW | W | 7 | 20 | 67 | 20 | 1017.3 | 1013.1 | 1 | 4 | 19.7 | 30.7 | No | 0 | No |\n' +
-        '| 10.1 | 31.2 | 0 | 8.8 | 13.1 | NW | 41 | S | W | 6 | 20 | 45 | 16 | 1018.2 | 1013.7 | 0 | 1 | 18.7 | 30.4 | No | 0 | No |\n' +
-        '| 12.4 | 32.1 | 0 | 8.4 | 11.1 | E | 46 | SE | WSW | 7 | 9 | 70 | 22 | 1017.9 | 1012.8 | 0 | 3 | 19.1 | 30.7 | No | 0 | No |\n' +
-        '| 13.8 | 31.2 | 0 | 7.2 | 8.4 | ESE | 44 | WSW | W | 6 | 19 | 72 | 23 | 1014.4 | 1009.8 | 7 | 6 | 20.2 | 29.8 | No | 1.2 | Yes |\n' +
-        '| 11.7 | 30 | 1.2 | 7.2 | 10.1 | S | 52 | SW | NE | 6 | 11 | 59 | 26 | 1016.4 | 1013 | 1 | 5 | 20.1 | 28.6 | Yes | 0.6 | No |\n';
-
-      const table = tsvToTable(tsv);
-      const line_1_20 = table.split('\n').splice(0, 20).join('\n') + '\n';
-      expect(line_1_20).toBe(expected);
-    });
-
-    it('should throw an error for a TSV file with only headers and no data', () => {
-      const tsv = 'Header1\tHeader2\tHeader3';
-      expect(() => tsvToTable(tsv)).toThrow('Invalid table structure');
-    });
-
-    it('should throw an error for a TSV file with extra trailing tabs', () => {
-      const tsv = 'A\tB\tC\n1\t2\t3\t\n4\t5\t6';
-      expect(() => tsvToTable(tsv)).toThrow('Invalid table structure');
-    });
-
-    it('should convert a TSV file with empty cells', () => {
-      const tsv = 'A\tB\n1\t\n\t2';
-      const expected =
-        '| A | B |\n' + '| --- | --- |\n' + '| 1 |  |\n' + '|  | 2 |\n';
-      expect(tsvToTable(tsv)).toBe(expected);
-    });
-
-    it('should convert a TSV file with special characters', () => {
-      const tsv = 'Name\tNote\nAlice\tHello, world!\nBob\t"Quoted"';
-      const expected =
-        '| Name | Note |\n' +
-        '| --- | --- |\n' +
-        '| Alice | Hello, world! |\n' +
-        '| Bob | "Quoted" |\n';
-      expect(tsvToTable(tsv)).toBe(expected);
-    });
-
-    it('should convert a TSV file with numeric and boolean values', () => {
-      const tsv = 'ID\tActive\n1\ttrue\n2\tfalse';
-      const expected =
-        '| ID | Active |\n' +
-        '| --- | --- |\n' +
-        '| 1 | true |\n' +
-        '| 2 | false |\n';
-      expect(tsvToTable(tsv)).toBe(expected);
-    });
-
-    it('should convert TSV to markdown table with custom delimiter alignments', () => {
-      const tsv = [
-        'First Name\tLast Name\tAge\tTitle\tArea',
-        'Alice\tSmith\t30\tEngineer\tNorth',
-        'Bob\t  Jo | hn|son \t25\tDesigner\tSouth',
-        'Charlie\tBrown\t35\tManager\tEast',
-        'David\tWilliams\t28\tDeveloper\tWest',
-        'Eve\tJones\t22\tIntern\tCentral',
-      ].join('\n');
-
-      // Set custom alignments: left, center, right
-      const delimiter: DelimiterRow = [
-        { alignment: 'left' },
-        { alignment: 'center' },
-        { alignment: 'right' },
-        {},
-        { alignment: undefined },
-      ];
-
-      const expected =
-        '| First Name | Last Name | Age | Title | Area |\n' +
-        '| :--- | :---: | ---: | --- | --- |\n' +
-        '| Alice | Smith | 30 | Engineer | North |\n' +
-        '| Bob | \\ \\ Jo \\| hn\\|son\\  | 25 | Designer | South |\n' +
-        '| Charlie | Brown | 35 | Manager | East |\n' +
-        '| David | Williams | 28 | Developer | West |\n' +
-        '| Eve | Jones | 22 | Intern | Central |\n';
-      const actual = tsvToTable(tsv, delimiter);
-      expect(actual).toBe(expected);
-    });
-  });
-
-  describe('Use case', () => {
-    it('should output a table with custom delimiter alignments', () => {
-      const tsv = [
-        'First Name\tLast Name\tAge\tTitle\tArea',
-        'Alice\tSmith\t30\tEngineer\tNorth',
-        'Bob\t  Jo | hn|son \t25\tDesigner\tSouth',
-        'Charlie\tBrown\t35\tManager\tEast',
-        'David\tWilliams\t28\tDeveloper\tWest',
-        'Eve\tJones\t22\tIntern\tCentral',
-      ].join('\n');
-      const table = parseTsv(tsv);
-
-      const delimiter: DelimiterRow = [
-        { alignment: 'left' },
-        { alignment: 'center' },
-        { alignment: 'right' },
-        {},
-        { alignment: undefined },
-      ];
-
-      const out = toTable({
-        ...table,
-        delimiter: delimiter,
-      });
-
-      expect(out).toBe(
-        '| First Name | Last Name | Age | Title | Area |\n' +
-          '| :--- | :---: | ---: | --- | --- |\n' +
-          '| Alice | Smith | 30 | Engineer | North |\n' +
-          '| Bob | \\ \\ Jo \\| hn\\|son\\  | 25 | Designer | South |\n' +
-          '| Charlie | Brown | 35 | Manager | East |\n' +
-          '| David | Williams | 28 | Developer | West |\n' +
-          '| Eve | Jones | 22 | Intern | Central |\n',
-      );
-    });
-  });
-
-  describe('escapeSpecialCharsForTable', () => {
-    it('should escape pipe character', () => {
-      expect(escapeSpecialCharsForTable('foo|bar')).toBe('foo\\|bar');
-    });
-    it('should escape backslash', () => {
-      expect(escapeSpecialCharsForTable('foo\\bar')).toBe('foo\\\\bar');
-    });
-    it('should escape leading spaces', () => {
-      expect(escapeSpecialCharsForTable('  foo')).toBe('\\ \\ foo');
-    });
-    it('should escape trailing spaces', () => {
-      expect(escapeSpecialCharsForTable('foo  ')).toBe('foo\\ \\ ');
-    });
-    it('should escape both leading and trailing spaces', () => {
-      expect(escapeSpecialCharsForTable('  foo  ')).toBe('\\ \\ foo\\ \\ ');
-    });
-    it('should escape all at once', () => {
-      expect(escapeSpecialCharsForTable(' |foo\\bar| ')).toBe(
-        '\\ \\|foo\\\\bar\\|\\ ',
-      );
-    });
-    it('should not escape normal text', () => {
-      expect(escapeSpecialCharsForTable('foo')).toBe('foo');
     });
   });
 });
