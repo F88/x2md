@@ -84,7 +84,7 @@ export interface MarkdownTable {
  * It is used to ensure that the string can be safely included in a Markdown table without breaking the table format.
  *
  */
-export function escapeSpecialCharsForTable(str: string): string {
+export function escapeSpecialChars(str: string): string {
   // Escape pipe, backslash, and leading/trailing spaces for Markdown tables
   return str
     .replace(/\\/g, '\\\\') // Escape backslash
@@ -97,7 +97,7 @@ export function toTableHeader(header: HeaderRow): string {
     return '';
   }
   const headerRow = header
-    .map((value) => escapeSpecialCharsForTable(value))
+    .map((value) => escapeSpecialChars(value))
     .join(' | ');
   const ret = `| ${headerRow} |\n`;
   return ret;
@@ -130,9 +130,7 @@ export function toTableDataRow(row: DataRow): string {
   if (row.length === 0) {
     return '';
   }
-  const dataRowString = row
-    .map((cell) => escapeSpecialCharsForTable(cell))
-    .join(' | ');
+  const dataRowString = row.map((cell) => escapeSpecialChars(cell)).join(' | ');
   const ret = `| ${dataRowString} |\n`;
   return ret;
 }

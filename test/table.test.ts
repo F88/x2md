@@ -7,7 +7,7 @@ import {
   toTableDelimiter,
   toTableHeader,
   validateTable,
-  escapeSpecialCharsForTable,
+  escapeSpecialChars,
   HeaderRow,
   DataRow,
 } from '../src/table.js';
@@ -24,29 +24,27 @@ const Specials = {
 } as const;
 
 describe('table.ts', () => {
-  describe('escapeSpecialCharsForTable', () => {
+  describe('escapeSpecialChars', () => {
     it('should escape pipe character', () => {
-      expect(escapeSpecialCharsForTable('foo|bar')).toBe('foo\\|bar');
+      expect(escapeSpecialChars('foo|bar')).toBe('foo\\|bar');
     });
     it('should escape backslash', () => {
-      expect(escapeSpecialCharsForTable('foo\\bar')).toBe('foo\\\\bar');
+      expect(escapeSpecialChars('foo\\bar')).toBe('foo\\\\bar');
     });
     it('should escape leading spaces', () => {
-      expect(escapeSpecialCharsForTable('  foo')).toBe('\\ \\ foo');
+      expect(escapeSpecialChars('  foo')).toBe('\\ \\ foo');
     });
     it('should escape trailing spaces', () => {
-      expect(escapeSpecialCharsForTable('foo  ')).toBe('foo\\ \\ ');
+      expect(escapeSpecialChars('foo  ')).toBe('foo\\ \\ ');
     });
     it('should escape both leading and trailing spaces', () => {
-      expect(escapeSpecialCharsForTable('  foo  ')).toBe('\\ \\ foo\\ \\ ');
+      expect(escapeSpecialChars('  foo  ')).toBe('\\ \\ foo\\ \\ ');
     });
     it('should escape all at once', () => {
-      expect(escapeSpecialCharsForTable(' |foo\\bar| ')).toBe(
-        '\\ \\|foo\\\\bar\\|\\ ',
-      );
+      expect(escapeSpecialChars(' |foo\\bar| ')).toBe('\\ \\|foo\\\\bar\\|\\ ');
     });
     it('should not escape normal text', () => {
-      expect(escapeSpecialCharsForTable('foo')).toBe('foo');
+      expect(escapeSpecialChars('foo')).toBe('foo');
     });
   });
 
