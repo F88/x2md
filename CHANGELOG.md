@@ -1,5 +1,11 @@
 # @msn088/x2md
 
+## 0.5.0
+
+### Minor Changes
+
+- 03a268e: Add utilities for tables.
+
 ## 0.4.0
 
 ### Minor Changes
