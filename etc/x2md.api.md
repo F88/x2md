@@ -5,12 +5,10 @@
 ```ts
 
 // @public
-type DataCell = string;
+export type DataCell = string;
 
-// Warning: (ae-forgotten-export) The symbol "DataCell" needs to be exported by the entry point index.d.ts
-//
 // @public
-type DataRow = DataCell[];
+export type DataRow = DataCell[];
 
 // @public
 export interface DelimiterCell {
@@ -21,24 +19,18 @@ export interface DelimiterCell {
 export type DelimiterRow = DelimiterCell[];
 
 // @public
-type HeaderCell = string;
-
-// Warning: (ae-forgotten-export) The symbol "HeaderCell" needs to be exported by the entry point index.d.ts
-//
-// @public
-type HeaderRow = HeaderCell[];
+export type HeaderCell = string;
 
 // @public
-interface MarkdownTable {
-    // Warning: (ae-forgotten-export) The symbol "DataRow" needs to be exported by the entry point index.d.ts
+export type HeaderRow = HeaderCell[];
+
+// @public
+export interface MarkdownTable {
     data: DataRow[];
     delimiter: DelimiterRow;
-    // Warning: (ae-forgotten-export) The symbol "HeaderRow" needs to be exported by the entry point index.d.ts
     header: HeaderRow;
 }
 
-// Warning: (ae-forgotten-export) The symbol "MarkdownTable" needs to be exported by the entry point index.d.ts
-//
 // @beta
 export function parseTsv(tsv: string): MarkdownTable;
 
