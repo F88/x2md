@@ -262,12 +262,9 @@ export function toTable(
     source.delimiter = customDelimiter;
   }
 
-  const isValid = validateTable(source);
-  if (!isValid.isValid) {
-    throw new Error(
-      'Invalid table structure' +
-        (isValid.message != null ? `: ${isValid.message}` : ''),
-    );
+  const result = validateTable(source);
+  if (!result.isValid) {
+    throw new Error(`Invalid table structure: ${String(result.message)}`);
   }
 
   const header = toTableHeader(source.header);

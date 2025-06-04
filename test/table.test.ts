@@ -355,5 +355,28 @@ describe('table.ts', () => {
       };
       expect(() => toTable(table)).toThrow('Invalid table structure');
     });
+
+    it('should throw on header and delimiter length mismatch', () => {
+      const table = {
+        header: ['Name', 'Age'],
+        delimiter: [{}, {}],
+        data: [['Alice', '30']],
+      };
+      const customDelimiter: DelimiterRow = [{ alignment: 'left' as const }];
+      expect(() => toTable(table, customDelimiter)).toThrow(
+        /^Invalid table structure: Table header and delimiter lengths do not match$/,
+      );
+    });
+
+    it('should throw on data row length mismatch', () => {
+      const table = {
+        header: ['Name', 'Age'],
+        delimiter: [{}, {}],
+        data: [['Alice']],
+      };
+      expect(() => toTable(table)).toThrow(
+        'Invalid table structure: Data row length does not match header length at line(s): 1',
+      );
+    });
   });
 });
