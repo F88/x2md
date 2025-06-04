@@ -35,12 +35,14 @@ import {
 export function parseTsv(tsv: string): MarkdownTable {
   const lines = tsv
     // .trim() /* DO NOT TRIM */
-    .split(/\r?\n|\r/)
-    .map((line) => {
-      return line;
-    });
+    .split(/\r?\n|\r/);
 
-  const source = lines.filter((e) => e !== ''); // Filter out empty lines
+  const source = lines
+    // .map((line) => {
+    //   // nop
+    //   return line;
+    // })
+    .filter((e) => e !== ''); // Filter out empty lines
 
   const header = source.length > 0 ? (source[0].split('\t') as HeaderRow) : [];
 
