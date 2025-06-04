@@ -80,16 +80,42 @@ export interface MarkdownTable {
  * @returns Escaped string suitable for Markdown tables.
  *
  * @remarks
- * This function escapes the pipe (`|`), backslash (`\`), and leading/trailing spaces in the string.
- * It is used to ensure that the string can be safely included in a Markdown table without breaking the table format.
+ * This function escapes the characters listed below.
+ *
+ * - Pipe (`|`)
+ * - Backslash (`\`)
  *
  */
-export function escapeSpecialChars(str: string): string {
-  // Escape pipe, backslash, and leading/trailing spaces for Markdown tables
-  return str
+export function escapeSpecialChars(s: string): string {
+  return s
     .replace(/\\/g, '\\\\') // Escape backslash
-    .replace(/\|/g, '\\|') // Escape pipe
-    .replace(/^\s+|\s+$/g, (s) => s.replace(/ /g, '\\ ')); // Escape leading/trailing spaces
+    .replace(/\|/g, '\\|'); // Escape pipe
+  // .replace(/^\s+|\s+$/g, (s) => s.replace(/ /g, '\\ ')); // Not effective for Markdown tables
+}
+
+/**
+ * Convert a string for display in a Markdown table.
+ *
+ * @param str - String to convert for Markdown table display.
+ * @returns Converted string suitable for Markdown tables.
+ *
+ * @remarks
+ * This function replaces string or character listed below.
+ *
+ * - Newline (`\n`) is replaced with `<br />`
+ */
+export function replaceForTable(s: string): string {
+  return s.replace(/\n/g, '<br />'); // Convert newlines to <br /> for Markdown tables
+}
+
+/**
+ * Convert a string for display in a Markdown table.
+ *
+ * @param str - String to convert for Markdown table display.
+ * @returns Converted string suitable for Markdown tables.
+ */
+export function convertForMarkdown(s: string): string {
+  return escapeSpecialChars(replaceForTable(s));
 }
 
 export function toTableHeader(header: HeaderRow): string {
@@ -97,7 +123,7 @@ export function toTableHeader(header: HeaderRow): string {
     return '';
   }
   const headerRow = header
-    .map((value) => escapeSpecialChars(value))
+    .map((value) => convertForMarkdown(value))
     .join(' | ');
   const ret = `| ${headerRow} |\n`;
   return ret;
@@ -130,7 +156,7 @@ export function toTableDataRow(row: DataRow): string {
   if (row.length === 0) {
     return '';
   }
-  const dataRowString = row.map((cell) => escapeSpecialChars(cell)).join(' | ');
+  const dataRowString = row.map((cell) => convertForMarkdown(cell)).join(' | ');
   const ret = `| ${dataRowString} |\n`;
   return ret;
 }

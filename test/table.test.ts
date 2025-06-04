@@ -1,15 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import {
+  convertForMarkdown,
+  DataRow,
   type DelimiterRow,
+  escapeSpecialChars,
+  HeaderRow,
+  replaceForTable,
   toTable,
   toTableDataRow,
   toTableDataRows,
   toTableDelimiter,
   toTableHeader,
   validateTable,
-  escapeSpecialChars,
-  HeaderRow,
-  DataRow,
 } from '../src/table.js';
 
 const Specials = {
@@ -18,52 +20,96 @@ const Specials = {
     data: [['|PIPE|X|', '\\TR\\UE\\', ' Space Cat ']] as DataRow[],
   },
   markdown: {
-    header: '| \\|PIPE\\|CHANNEL\\| | \\\\?\\\\ | \\ Space alian\\  |\n',
-    data: '| \\|PIPE\\|X\\| | \\\\TR\\\\UE\\\\ | \\ Space Cat\\  |\n',
+    header: '| \\|PIPE\\|CHANNEL\\| | \\\\?\\\\ |  Space alian  |\n',
+    data: '| \\|PIPE\\|X\\| | \\\\TR\\\\UE\\\\ |  Space Cat  |\n',
   },
 } as const;
 
 describe('table.ts', () => {
   describe('escapeSpecialChars', () => {
+    it('should handle empty strings', () => {
+      expect(escapeSpecialChars('')).toBe('');
+    });
+    it('should not escape normal text', () => {
+      expect(escapeSpecialChars('foo')).toBe('foo');
+    });
     it('should escape pipe character', () => {
       expect(escapeSpecialChars('foo|bar')).toBe('foo\\|bar');
     });
     it('should escape backslash', () => {
       expect(escapeSpecialChars('foo\\bar')).toBe('foo\\\\bar');
     });
-    it('should escape leading spaces', () => {
-      expect(escapeSpecialChars('  foo')).toBe('\\ \\ foo');
-    });
-    it('should escape trailing spaces', () => {
-      expect(escapeSpecialChars('foo  ')).toBe('foo\\ \\ ');
-    });
-    it('should escape both leading and trailing spaces', () => {
-      expect(escapeSpecialChars('  foo  ')).toBe('\\ \\ foo\\ \\ ');
-    });
     it('should escape all at once', () => {
-      expect(escapeSpecialChars(' |foo\\bar| ')).toBe('\\ \\|foo\\\\bar\\|\\ ');
+      expect(escapeSpecialChars('|foo\\bar|')).toBe('\\|foo\\\\bar\\|');
     });
-    it('should not escape normal text', () => {
-      expect(escapeSpecialChars('foo')).toBe('foo');
+
+    it('should handle strings with only special characters', () => {
+      expect(escapeSpecialChars('|\\')).toBe('\\|\\\\');
+    });
+    it('should handle strings with special characters and spaces', () => {
+      expect(escapeSpecialChars(' |foo| bar\\ ')).toBe(' \\|foo\\| bar\\\\ ');
+    });
+  });
+
+  describe('replaceForTable', () => {
+    it('should replace newline with <br />', () => {
+      expect(replaceForTable('foo\nbar')).toBe('foo<br />bar');
+    });
+    it('should not change text without newlines', () => {
+      expect(replaceForTable('foo bar')).toBe('foo bar');
+    });
+    it('should handle multiple newlines', () => {
+      expect(replaceForTable('foo\nbar\nbaz')).toBe('foo<br />bar<br />baz');
+    });
+    it('should handle empty strings', () => {
+      expect(replaceForTable('')).toBe('');
+    });
+    it('should handle strings with only newlines', () => {
+      expect(replaceForTable('\n\n')).toBe('<br /><br />');
+    });
+    it('should handle strings with leading and trailing newlines', () => {
+      expect(replaceForTable('\nfoo\n')).toBe('<br />foo<br />');
+    });
+  });
+
+  describe('convertForMarkdown', () => {
+    it('should escape special characters and replace newlines', () => {
+      expect(convertForMarkdown('foo|bar\nbaz')).toBe('foo\\|bar<br />baz');
+    });
+    it('should escape special characters without newlines', () => {
+      expect(convertForMarkdown('foo|bar')).toBe('foo\\|bar');
+    });
+    it('should handle empty strings', () => {
+      expect(convertForMarkdown('')).toBe('');
     });
   });
 
   describe('toTableHeader', () => {
-    it('should format a single header row', () => {
-      const header = ['Name', 'Age'];
-      expect(toTableHeader(header)).toBe('| Name | Age |\n');
-    });
-    it('should format a single header row contains special characters', () => {
-      const header = Specials.object.header;
-      expect(toTableHeader(header)).toBe(Specials.markdown.header);
+    it('should handle empty header', () => {
+      const header: string[] = [];
+      expect(toTableHeader(header)).toBe('');
     });
     it('should handle a single cell', () => {
       const header = ['Only'];
       expect(toTableHeader(header)).toBe('| Only |\n');
     });
-    it('should handle empty header', () => {
-      const header: string[] = [];
-      expect(toTableHeader(header)).toBe('');
+    it('should format a header with multiple cells', () => {
+      const header = ['Column1', 'Column2', 'Column3'];
+      expect(toTableHeader(header)).toBe('| Column1 | Column2 | Column3 |\n');
+    });
+    it('should format a header with empty cells', () => {
+      const header = ['Column1', '', 'Column3'];
+      expect(toTableHeader(header)).toBe('| Column1 |  | Column3 |\n');
+    });
+    it('should format a header with special characters', () => {
+      const header = ['Name|Pipe', 'Age\\Backslash'];
+      expect(toTableHeader(header)).toBe(
+        '| Name\\|Pipe | Age\\\\Backslash |\n',
+      );
+    });
+    it('should format a header with newlines', () => {
+      const header = ['Name\nNewline', 'Age'];
+      expect(toTableHeader(header)).toBe('| Name<br />Newline | Age |\n');
     });
   });
 
@@ -98,7 +144,7 @@ describe('table.ts', () => {
 
   describe('toTableDataRow', () => {
     it('should format a data row', () => {
-      const row: string[] = ['Alice', '30'];
+      const row = ['Alice', '30'];
       expect(toTableDataRow(row)).toBe('| Alice | 30 |\n');
     });
     it('should format a single header row contains special characters', () => {
@@ -106,12 +152,24 @@ describe('table.ts', () => {
       expect(toTableHeader(row)).toBe(Specials.markdown.data);
     });
     it('should handle a single cell', () => {
-      const row: string[] = ['Only'];
+      const row = ['Only'];
       expect(toTableDataRow(row)).toBe('| Only |\n');
     });
     it('should handle empty row', () => {
-      const row: string[] = [];
+      const row = [] as string[];
       expect(toTableDataRow(row)).toBe('');
+    });
+    it('should handle a row with empty cells', () => {
+      const row = ['Column1', '', 'Column3'];
+      expect(toTableDataRow(row)).toBe('| Column1 |  | Column3 |\n');
+    });
+    it('should format a row with special characters', () => {
+      const row = ['Name|Pipe', 'Age\\Backslash'];
+      expect(toTableDataRow(row)).toBe('| Name\\|Pipe | Age\\\\Backslash |\n');
+    });
+    it('should format a row with newlines', () => {
+      const row = ['Name\nNewline', 'Age'];
+      expect(toTableDataRow(row)).toBe('| Name<br />Newline | Age |\n');
     });
   });
 
@@ -220,6 +278,7 @@ describe('table.ts', () => {
           ['Bob', '25'],
         ],
       };
+      console.log(toTable(table));
       expect(toTable(table)).toBe(
         '| Name | Age |\n| --- | --- |\n| Alice | 30 |\n| Bob | 25 |\n',
       );
@@ -241,6 +300,16 @@ describe('table.ts', () => {
       expect(toTable(table, customDelimiter)).toBe(
         '| Name | Age |\n| :--- | ---: |\n| Alice | 30 |\n| Bob | 25 |\n',
       );
+    });
+
+    it('should format a valid table with only spaces', () => {
+      const table = {
+        header: [' ', '  '],
+        delimiter: [{}, {}],
+        data: [['  ', '   ']],
+      };
+      console.log(toTable(table));
+      expect(toTable(table)).toBe('|   |    |\n| --- | --- |\n|    |     |\n');
     });
 
     it('should throw on invalid table (header/delimiter mismatch)', () => {
