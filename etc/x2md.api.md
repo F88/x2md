@@ -4,40 +4,42 @@
 
 ```ts
 
-// @public (undocumented)
+// @public
 type DataCell = string;
 
 // Warning: (ae-forgotten-export) The symbol "DataCell" needs to be exported by the entry point index.d.ts
 //
-// @public (undocumented)
+// @public
 type DataRow = DataCell[];
 
-// @public (undocumented)
-export type DelimiterCell = {
+// @public
+export interface DelimiterCell {
     alignment?: 'left' | 'center' | 'right';
-};
+}
 
-// @public (undocumented)
+// @public
 export type DelimiterRow = DelimiterCell[];
 
-// @public (undocumented)
+// @public
 type HeaderCell = string;
 
 // Warning: (ae-forgotten-export) The symbol "HeaderCell" needs to be exported by the entry point index.d.ts
 //
-// @public (undocumented)
+// @public
 type HeaderRow = HeaderCell[];
 
-// @public (undocumented)
-type MarkdownTable = {
-    header: HeaderRow;
-    delimiter: DelimiterRow;
+// @public
+interface MarkdownTable {
+    // Warning: (ae-forgotten-export) The symbol "DataRow" needs to be exported by the entry point index.d.ts
     data: DataRow[];
-};
+    delimiter: DelimiterRow;
+    // Warning: (ae-forgotten-export) The symbol "HeaderRow" needs to be exported by the entry point index.d.ts
+    header: HeaderRow;
+}
 
 // Warning: (ae-forgotten-export) The symbol "MarkdownTable" needs to be exported by the entry point index.d.ts
 //
-// @public (undocumented)
+// @beta
 export function parseTsv(tsv: string): MarkdownTable;
 
 // @public
@@ -49,12 +51,7 @@ export function toList(items: string[], indentLevel?: number): string;
 // @public
 export function toListItem(value: string, indentLevel?: number): string;
 
-// @beta
-export function tsvToTable(tsv: string, delimiter?: DelimiterRow): string;
-
-// Warnings were encountered during analysis:
-//
-// src/table.ts:16:3 - (ae-forgotten-export) The symbol "HeaderRow" needs to be exported by the entry point index.d.ts
-// src/table.ts:18:3 - (ae-forgotten-export) The symbol "DataRow" needs to be exported by the entry point index.d.ts
+// @public
+export function toTable(table: MarkdownTable, customDelimiter?: DelimiterRow): string;
 
 ```
