@@ -1,23 +1,89 @@
+/**
+ * Markdown Table Utilities
+ *
+ * Provides functions to create and validate Markdown tables.
+ */
+
+/**
+ * HeaderCell represents a single cell in the header row of a Markdown table.
+ *
+ * @public
+ */
 export type HeaderCell = string;
 
+/**
+ * HeaderRow represents a row of header cells in a Markdown table.
+ *
+ * @public
+ */
 export type HeaderRow = HeaderCell[];
 
-export type DelimiterCell = {
+/**
+ * DelimiterCell represents a single cell in the delimiter row of a Markdown table.
+ *
+ * @public
+ */
+export interface DelimiterCell {
+  /**
+   * The alignment of the cell content.
+   */
   alignment?: 'left' | 'center' | 'right';
-};
+}
 
+/**
+ * DelimiterRow represents a row of delimiter cells in a Markdown table.
+ *
+ * @public
+ */
 export type DelimiterRow = DelimiterCell[];
 
+/**
+ * DataCell represents a single cell in the data rows of a Markdown table.
+ *
+ * @public
+ */
 export type DataCell = string;
 
+/**
+ * DataRow represents a row of data cells in a Markdown table.
+ *
+ * @public
+ */
 export type DataRow = DataCell[];
 
-export type MarkdownTable = {
+/**
+ * MarkdownTable represents a complete Markdown table structure.
+ *
+ * @public
+ */
+export interface MarkdownTable {
+  /**
+   * The header row of the table.
+   */
   header: HeaderRow;
-  delimiter: DelimiterRow;
-  data: DataRow[];
-};
 
+  /**
+   * The delimiter row of the table, defining cell alignments.
+   */
+  delimiter: DelimiterRow;
+
+  /**
+   * The data rows of the table, containing the actual content.
+   */
+  data: DataRow[];
+}
+
+/**
+ * Escape special characters in a string for use in Markdown tables.
+ *
+ * @param str - String to escape special characters for Markdown tables.
+ * @returns Escaped string suitable for Markdown tables.
+ *
+ * @remarks
+ * This function escapes the pipe (`|`), backslash (`\`), and leading/trailing spaces in the string.
+ * It is used to ensure that the string can be safely included in a Markdown table without breaking the table format.
+ *
+ */
 export function escapeSpecialCharsForTable(str: string): string {
   // Escape pipe, backslash, and leading/trailing spaces for Markdown tables
   return str
@@ -129,6 +195,47 @@ export function validateTable(table: MarkdownTable): {
   return { isValid: true };
 }
 
+/**
+ * Convert a MarkdownTable to a string representation.
+ *
+ * @param table - The MarkdownTable to convert.
+ * @param customDelimiter - Optional custom delimiter row.
+ * @returns String representation of the MarkdownTable.
+ * @throws Error if the table structure is invalid.
+ *
+ * @remarks
+ * This function takes a `MarkdownTable` object and converts it into a string formatted as a Markdown table.
+ * It validates the table structure before conversion, ensuring that the header, delimiter, and data rows are correctly formatted.
+ * If the table structure is invalid, it throws an error with a message indicating the issue.
+ *
+ * The `customDelimiter` parameter allows you to specify a custom delimiter row for the table.
+ * If provided, it overrides the default delimiter row in the table.
+ *
+ * @example
+ * ```typescript
+ * import { toTable } from '@msn088/x2md';
+ * const table = {
+ *   header: ['Name', 'Age'],
+ *  delimiter: [
+ *    { alignment: 'left' },
+ *    { alignment: 'right' },
+ *  ],
+ *  data: [
+ *    ['Alice', '30'],
+ *    ['Bob', '25'],
+ *  ],
+ * };
+ * const markdownTable = toTable(table);
+ * console.log(markdownTable);
+ * // Output:
+ * * | Name  | Age |
+ * * | :---  | ---: |
+ * * | Alice | 30  |
+ * * | Bob   | 25  |
+ * ```
+ *
+ * @public
+ */
 export function toTable(
   table: MarkdownTable,
   customDelimiter?: DelimiterRow,
@@ -149,6 +256,7 @@ export function toTable(
   const header = toTableHeader(source.header);
   const delimiter = toTableDelimiter(source.delimiter);
   const data = toTableDataRows(source.data);
+
   const ret = header + delimiter + data;
   return ret;
 }
