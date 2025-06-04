@@ -194,13 +194,6 @@ export function validateTable(table: MarkdownTable): {
     };
   }
 
-  if (table.data.length === 0) {
-    return {
-      isValid: false,
-      message: 'Table data is empty',
-    };
-  }
-
   const lineNo = [];
   for (let index = 0; index < table.data.length; index++) {
     const row = table.data[index];

@@ -232,6 +232,20 @@ describe('table.ts', () => {
       });
     });
 
+    it('should return true if data is empty', () => {
+      const table = {
+        header: ['Name', 'Age'],
+        delimiter: [
+          { alignment: 'left' as const },
+          { alignment: 'right' as const },
+        ],
+        data: [],
+      };
+      expect(validateTable(table)).toStrictEqual({
+        isValid: true,
+      });
+    });
+
     it('should return false if data row length mismatches header', () => {
       const table = {
         header: ['Name', 'Age'],
