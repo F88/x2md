@@ -230,7 +230,7 @@ export function validateTable(table: MarkdownTable): {
  *
  * @example
  * ```typescript
- * import { toTable } from '@msn088/x2md';
+ * import { toTable } from 'x2md';
  * const table = {
  *   header: ['Name', 'Age'],
  *  delimiter: [

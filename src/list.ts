@@ -12,7 +12,7 @@
  *
  * @example
  * ```typescript
- * import { toListItem } from '@msn088/x2md';
+ * import { toListItem } from 'x2md';
  * const item1 = toListItem('First item'); // "- First item\n"
  * const item2 = toListItem('Second item', 1); // "    - Second item\n"
  * const item3 = toListItem('Third item', 2); // "        - Third item\n"
@@ -40,7 +40,7 @@ export function toListItem(value: string, indentLevel: number = 0): string {
  *
  * @example
  * ```typescript
- * import { toList } from '@msn088/x2md';
+ * import { toList } from 'x2md';
  * const listItems = ['Item 1', 'Item 2', 'Item 3'];
  * const markdownList = toList(listItems);
  * // Output:

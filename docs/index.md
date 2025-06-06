@@ -19,7 +19,7 @@ Description
 </th></tr></thead>
 <tbody><tr><td>
 
-[@msn088/x2md](./x2md.md)
+[x2md](./x2md.md)
 
 
 </td><td>
