@@ -1,5 +1,11 @@
 # x2md
 
+## 1.0.0
+
+### Major Changes
+
+- Released as stable version
+
 ## 0.6.0
 
 ### Minor Changes
