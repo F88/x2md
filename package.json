@@ -1,5 +1,5 @@
 {
-  "name": "@msn088/x2md",
+  "name": "2md",
   "version": "0.5.0",
   "description": "Collection of small utilities that convert input values into strings suitable for Markdown formatting.",
   "type": "module",
