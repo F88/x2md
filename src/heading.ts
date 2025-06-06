@@ -14,7 +14,7 @@
  *
  * @example
  * ```typescript
- * import { toHeader } from '@msn088/x2md';
+ * import { toHeader } from 'x2md';
  * const header = toHeader('Header Level 1'); // "# Header Level 1\n"
  * const header0 = toHeader('Header Level 0', 0); // "# Header Level 0\n"
  * const header1 = toHeader('Header Level 1', 1); // "# Header Level 1\n"
