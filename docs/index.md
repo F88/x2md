@@ -19,18 +19,7 @@ Description
 </th></tr></thead>
 <tbody><tr><td>
 
-[@msn088/x2md](./x2md.md)
-
-
-</td><td>
-
-Collection of tiny utilities that convert input values into strings suitable for Markdown formatting.
-
-
-</td></tr>
-<tr><td>
-
-[2md](./2md.md)
+[x2md](./x2md.md)
 
 
 </td><td>
