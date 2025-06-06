@@ -28,4 +28,15 @@ Collection of tiny utilities that convert input values into strings suitable for
 
 
 </td></tr>
+<tr><td>
+
+[2md](./2md.md)
+
+
+</td><td>
+
+Collection of tiny utilities that convert input values into strings suitable for Markdown formatting.
+
+
+</td></tr>
 </tbody></table>
