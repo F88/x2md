@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- Change pacakge name. (remove pacakge scope)
+- Change package name. (remove package scope)
 
 ## 0.5.0 / @msn088/x2md
 
