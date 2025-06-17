@@ -5,6 +5,7 @@
  */
 
 export * from './heading.js';
+export * from './link.js';
 export * from './list.js';
 export {
   type DataCell,
