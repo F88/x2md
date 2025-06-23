@@ -62,7 +62,7 @@
     "eslint": "~9.28",
     "eslint-config-prettier": "~10.1",
     "globals": "~16.2",
-    "prettier": "~3.5",
+    "prettier": "~3.6.0",
     "rimraf": "~6.0",
     "ts-api-utils": "~2.1.0",
     "tsx": "~4.19",
