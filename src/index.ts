@@ -18,3 +18,4 @@ export {
 } from './table.js';
 
 export { parseTsv } from './parser.js';
+export * from './frontmatter.js';
