@@ -1,6 +1,6 @@
 {
   "name": "x2md",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Collection of small utilities that convert input values into strings suitable for Markdown formatting.",
   "type": "module",
   "private": false,

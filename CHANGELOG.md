@@ -1,5 +1,12 @@
 # x2md
 
+## 1.0.1
+
+### Patch Changes
+
+- c92c386: Update dependencies
+- 1b1227f: Fix Node.js engine requirement to >= 22
+
 ## 1.0.0
 
 ### Major Changes
