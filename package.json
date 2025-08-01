@@ -18,7 +18,7 @@
   },
   "bugs": "https://github.com/F88/x2md/issues",
   "engines": {
-    "node": ">= 20"
+    "node": ">= 22"
   },
   "main": "lib/index.js",
   "types": "dist/x2md.d.ts",
