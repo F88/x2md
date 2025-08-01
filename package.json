@@ -66,7 +66,7 @@
     "rimraf": "~6.0",
     "ts-api-utils": "~2.1.0",
     "tsx": "~4.20",
-    "typescript": "~5.8",
+    "typescript": "~5.9.0",
     "typescript-eslint": "~8.38",
     "vitest": "~3.2.4"
   },
