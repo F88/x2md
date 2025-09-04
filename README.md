@@ -7,6 +7,9 @@
 [![Node.js CI (npm)](https://github.com/F88/x2md/actions/workflows/nodejs-ci-npm.yml/badge.svg)](https://github.com/F88/x2md/actions/workflows/nodejs-ci-npm.yml)
 [![Publish package to npmjs.com](https://github.com/F88/x2md/actions/workflows/npm-publish-to-npmjs.yml/badge.svg?branch=main)](https://github.com/F88/x2md/actions/workflows/npm-publish-to-npmjs.yml)
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/F88/x2md)
+
+
 Collection of small utilities that convert input values into strings suitable for Markdown formatting.
 
 ## See Also
