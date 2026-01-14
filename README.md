@@ -8,6 +8,7 @@
 [![Publish package to npmjs.com](https://github.com/F88/x2md/actions/workflows/npm-publish-to-npmjs.yml/badge.svg?branch=main)](https://github.com/F88/x2md/actions/workflows/npm-publish-to-npmjs.yml)
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/F88/x2md)
+[![View Code Wiki](https://www.gstatic.com/_/boq-sdlc-agents-ui/_/r/YUi5dj2UWvE.svg)](https://codewiki.google/github.com/F88/x2md)
 
 Collection of small utilities that convert input values into strings suitable for Markdown formatting.
 
