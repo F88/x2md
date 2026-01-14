@@ -9,7 +9,6 @@
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/F88/x2md)
 
-
 Collection of small utilities that convert input values into strings suitable for Markdown formatting.
 
 ## See Also

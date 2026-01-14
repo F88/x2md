@@ -198,7 +198,7 @@ export function validateTable(table: MarkdownTable): {
   for (let index = 0; index < table.data.length; index++) {
     const row = table.data[index];
     if (row.length !== table.header.length) {
-      lineNo.push(index + +1);
+      lineNo.push(index + 1);
     }
   }
   if (lineNo.length > 0) {
