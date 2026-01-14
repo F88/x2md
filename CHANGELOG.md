@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Update dependencies to latest versions
-- Migrate ESLint config from `tseslint.config` to `defineConfig`
+- Migrate ESLint config from `tseslint.config()` to `defineConfig()`
 - Remove unnecessary unary plus operator in table validation
 
 ## 1.0.1
