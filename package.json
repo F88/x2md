@@ -61,7 +61,7 @@
     "@vitest/eslint-plugin": "~1.6",
     "eslint": "~9.39",
     "eslint-config-prettier": "~10.1",
-    "globals": "~17.0",
+    "globals": "~17.12.0",
     "prettier": "~3.7",
     "rimraf": "~6.1",
     "ts-api-utils": "~2.4.0",
