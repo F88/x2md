@@ -54,7 +54,7 @@
     "@eslint/js": "~9.39",
     "@faker-js/faker": "~10.2.0",
     "@microsoft/api-documenter": "~7.28",
-    "@microsoft/api-extractor": "~7.55",
+    "@microsoft/api-extractor": "~7.59.0",
     "@types/node": "~22",
     "@typescript-eslint/parser": "~8.53",
     "@vitest/coverage-v8": "~4.0.17",
