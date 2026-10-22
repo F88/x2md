@@ -57,7 +57,7 @@
     "@microsoft/api-extractor": "~7.55",
     "@types/node": "~22",
     "@typescript-eslint/parser": "~8.53",
-    "@vitest/coverage-v8": "~4.0.17",
+    "@vitest/coverage-v8": "~4.1.0",
     "@vitest/eslint-plugin": "~1.6",
     "eslint": "~9.39",
     "eslint-config-prettier": "~10.1",
